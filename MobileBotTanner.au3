@@ -195,9 +195,9 @@ Func walkToGrandExchange()
 	betterMouseMoveSpeed(485, 278, 10)
 	Sleep(1500)
 	MouseUp("")
+	Sleep(2000)
 
 	;deposit all just incase
-	Sleep(2000)
 	betterMouseClick(598, 485)
 	Sleep(1000)
 
@@ -218,22 +218,28 @@ Func walkToGrandExchange()
 		betterMouseClick(248, 278) ;click coins
 		Sleep(1000)
 		$withdrawnItems[0] = 1
+		ConsoleWrite("clicked coins")
 	EndIf
 	If betterPixelSearch(297, 270, 297, 270, 0xACA09F, 2) Then
 		betterMouseClick(296, 272) ;click cowhide
 		Sleep(1000)
 		$withdrawnItems[1] = 1
+		ConsoleWrite("clicked cow")
 	EndIf
 	If betterPixelSearch(344, 273, 344, 273, 0x2A2414, 2) Then
 		betterMouseClick(341, 274) ;click hard leather
 		Sleep(1000)
 		$withdrawnItems[2] = 1
+		ConsoleWrite("clicked leather")
 	EndIf
 	If betterPixelSearch(389, 273, 389, 273, 0x3D3905, 2) Then
 		betterMouseClick(390, 272) ;click leather
 		Sleep(1000)
 		$withdrawnItems[3] = 1
+		ConsoleWrite("clicked soft leather")
 	EndIf
+
+	ConsoleWrite(@CRLF)
 
 	;close the bank
 	betterMouseClick(638, 199)
@@ -246,9 +252,30 @@ Func walkToGrandExchange()
 	betterMouseMoveSpeed(462, 301, 10)
 	Sleep(1500)
 	MouseUp("")
+	Sleep(2000)
 
+	Local $startSlot = 1
+	Local $startSlots[4][2] = [[769,258],[769,258],[809,256],[852,258]]
 	;sell items
+	betterMouseClick(272, 324)
+	Sleep(1000)
+	If ($withdrawnItems[0] = 1) Then ;see if we are holding coins already
+		$startSlot = 2 - 1 ;-1 for array
+	Else
+		$startSlot = 1 - 1 ;-1 for array
+	EndIf
 
+	Local $totalSlots = 0
+	Local $currentSlot = $startSlot
+	For $x in $withdrawnItems
+		$totalSlots += $withdrawnItems[$x]
+		ConsoleWrite(", " & $x)
+	Next
+
+	ConsoleWrite(@CRLF)
+	ConsoleWrite("totalSlots: " & $totalSlots & ", startSlot: " & $startSlot & ", currentSlot: " & $currentSlot)
+	;buy 2000 cowhide
+;~ 	Send("cowhide"
 EndFunc
 
 Func depositLeather()
