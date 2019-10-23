@@ -46,6 +46,21 @@ EndFunc
 Func betterMouseMoveSpeed($x, $y, $speed)
 	MouseMove($x + $posArray[0], $y + $posArray[1], $speed)
 EndFunc
+
+Func betterPixelSearchArray($left, $top, $right, $bottom, $color, $shade)
+	$aCoord = PixelSearch($left + $posArray[0], $top + $posArray[1], $right + $posArray[0], $bottom + $posArray[1], $color, $shade)
+	If Not @error Then
+		Return $aCoord
+	EndIf
+EndFunc
+
+Func betterPixelSearch($left, $top, $right, $bottom, $color, $shade)
+	PixelSearch($left + $posArray[0], $top + $posArray[1], $right + $posArray[0], $bottom + $posArray[1], $color, $shade)
+	If Not @error Then
+		Return True
+	EndIf
+EndFunc
+
 ;inital setup for the bot
 Func runBot()
 	While Not $startBot
@@ -138,47 +153,101 @@ EndFunc
 
 Func walkToGrandExchange()
 	;align self to door
-	Local $doorFound = False
-	While Not $doorFound
-		Local $aCoord = PixelSearch(798+$posArray[0], 71+$posArray[1], 833+$posArray[0], 96+$posArray[1], 0xC41713, 10)
-		If Not @error Then
-			$doorFound = True
-			MouseClick("", $aCoord[0]+4, $aCoord[1]+1, 1, 0)
-		Else
-			ConsoleWrite("walkToGrandExchange() T1: Lost" & " ")
-			$doorFound = False
+;~ 	Local $doorFound = False
+;~ 	While Not $doorFound
+;~ 		Local $aCoord = PixelSearch(798+$posArray[0], 71+$posArray[1], 833+$posArray[0], 96+$posArray[1], 0xC41713, 10)
+;~ 		If Not @error Then
+;~ 			$doorFound = True
+;~ 			MouseClick("", $aCoord[0]+4, $aCoord[1]+1, 1, 0)
+;~ 		Else
+;~ 			ConsoleWrite("walkToGrandExchange() T1: Lost" & " ")
+;~ 			$doorFound = False
 
-			Local $bCoord = PixelSearch(798+$posArray[0], 71+$posArray[1], 833+$posArray[0], 96+$posArray[1], 0xAC170E, 25)
-			If Not @error Then
-				$doorFound = True
-				MouseClick("", $bCoord[0]+4, $bCoord[1]+1, 1, 0)
-			Else
-				ConsoleWrite("T2: Lost")
-				$doorFound = False
-			EndIf
-		EndIf
-	WEnd
-	ConsoleWrite(@CRLF)
+;~ 			Local $bCoord = PixelSearch(798+$posArray[0], 71+$posArray[1], 833+$posArray[0], 96+$posArray[1], 0xAC170E, 25)
+;~ 			If Not @error Then
+;~ 				$doorFound = True
+;~ 				MouseClick("", $bCoord[0]+4, $bCoord[1]+1, 1, 0)
+;~ 			Else
+;~ 				ConsoleWrite("T2: Lost")
+;~ 				$doorFound = False
+;~ 			EndIf
+;~ 		EndIf
+;~ 	WEnd
+;~ 	ConsoleWrite(@CRLF)
 
-	;walks to grand exchange
-	Sleep(10000)
-	betterMouseClick(800, 58)
-	Sleep(12000)
-	betterMouseClick(787, 77)
-	Sleep(8000)
-	betterMouseClick(782, 98)
-	Sleep(7500)
-	betterMouseClick(835, 45)
-	Sleep(9000)
-	betterMouseClick(844, 51)
-	Sleep(10000)
+;~ 	;walks to grand exchange
+;~ 	Sleep(10000)
+;~ 	betterMouseClick(800, 58)
+;~ 	Sleep(12000)
+;~ 	betterMouseClick(787, 77)
+;~ 	Sleep(8000)
+;~ 	betterMouseClick(782, 98)
+;~ 	Sleep(7500)
+;~ 	betterMouseClick(835, 45)
+;~ 	Sleep(9000)
+;~ 	betterMouseClick(844, 51)
+;~ 	Sleep(10000)
 
 	;opens bank
 	betterMouseMove(484, 224)
 	MouseDown("")
 	Sleep(2000)
-	betterMouseMoveSpeed(485, 258, 10)
+	betterMouseMoveSpeed(485, 278, 10)
+	Sleep(1500)
 	MouseUp("")
+
+	;deposit all just incase
+	Sleep(2000)
+	betterMouseClick(598, 485)
+	Sleep(1000)
+
+	;set quantity to all, withdraw as note
+	If betterPixelSearch(492, 498, 492, 498, 0x585853, 2) Then ;checks if all is already enabled
+		betterMouseClick(489, 492) ;click all
+		Sleep(1000)
+	EndIf
+	If betterPixelSearch(371, 490, 371, 490, 0x545450, 2) Then ;checks if note is already enabled
+		betterMouseClick(354, 493) ;click note
+		Sleep(1000)
+	EndIf
+
+	Local $withdrawnItems[4] = [0, 0, 0, 0]
+
+	;withdraw coins, all hides including leather
+	If betterPixelSearch(250, 278, 250, 278, 0xCEA311, 2) Then ;checks if coins are in the bank
+		betterMouseClick(248, 278) ;click coins
+		Sleep(1000)
+		$withdrawnItems[0] = 1
+	EndIf
+	If betterPixelSearch(297, 270, 297, 270, 0xACA09F, 2) Then
+		betterMouseClick(296, 272) ;click cowhide
+		Sleep(1000)
+		$withdrawnItems[1] = 1
+	EndIf
+	If betterPixelSearch(344, 273, 344, 273, 0x2A2414, 2) Then
+		betterMouseClick(341, 274) ;click hard leather
+		Sleep(1000)
+		$withdrawnItems[2] = 1
+	EndIf
+	If betterPixelSearch(389, 273, 389, 273, 0x3D3905, 2) Then
+		betterMouseClick(390, 272) ;click leather
+		Sleep(1000)
+		$withdrawnItems[3] = 1
+	EndIf
+
+	;close the bank
+	betterMouseClick(638, 199)
+	Sleep(1000)
+
+	;open grand exchange
+	betterMouseMove(462, 247)
+	MouseDown("")
+	Sleep(2000)
+	betterMouseMoveSpeed(462, 301, 10)
+	Sleep(1500)
+	MouseUp("")
+
+	;sell items
 
 EndFunc
 
