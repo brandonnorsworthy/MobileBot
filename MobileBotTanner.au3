@@ -13,8 +13,7 @@ Global $gotLost = 0
 #EndRegion
 
 WinActivate("Streaming game from BlueStacks")
-
-walkToGrandExchange()
+teleportToLumbridge()
 
 ;stops script when hotkey is pressed
 Func stopBot()
@@ -122,6 +121,27 @@ Func checkIfOutOfCowhides()
 	EndIf
 EndFunc
 
+Func teleportToLumbridge()
+	MouseClick("", 596+$posArray[0], 488+$posArray[1], 1, 0) ;deposit inventory
+	Sleep(1500)
+
+	withdrawLumbridgeRunes()
+
+	MouseClick("", 637+$posArray[0], 200+$posArray[1], 1, 0) ;close bank
+	Sleep(3000)
+
+	;check if magic tab is open
+	PixelSearch(58+$posArray[0], 311+$posArray[1],58+$posArray[0], 311+$posArray[1], 0x71261D, 2)
+	If @error Then
+		MouseClick("", 58+$posArray[0], 311+$posArray[1], 1, 0)
+		Sleep(1000)
+	EndIf
+
+	;click teleport
+	betterMouseClick(209, 293)
+	Sleep(6000)
+EndFunc
+
 Func teleportToVarrock()
 	MouseClick("", 596+$posArray[0], 488+$posArray[1], 1, 0) ;deposit inventory
 	Sleep(1500)
@@ -153,40 +173,38 @@ EndFunc
 
 Func walkToGrandExchange()
 	;align self to door
-;~ 	Local $doorFound = False
-;~ 	While Not $doorFound
-;~ 		Local $aCoord = PixelSearch(798+$posArray[0], 71+$posArray[1], 833+$posArray[0], 96+$posArray[1], 0xC41713, 10)
-;~ 		If Not @error Then
-;~ 			$doorFound = True
-;~ 			MouseClick("", $aCoord[0]+4, $aCoord[1]+1, 1, 0)
-;~ 		Else
-;~ 			ConsoleWrite("walkToGrandExchange() T1: Lost" & " ")
-;~ 			$doorFound = False
+	Local $doorFound = False
+	While Not $doorFound
+		Local $aCoord = PixelSearch(790+$posArray[0], 70+$posArray[1], 835+$posArray[0], 100+$posArray[1], 0xDC0E09, 10)
+		If Not @error Then
+			$doorFound = True
+			MouseClick("", $aCoord[0]+4, $aCoord[1]+1, 1, 0)
+		Else
+			$doorFound = False
 
-;~ 			Local $bCoord = PixelSearch(798+$posArray[0], 71+$posArray[1], 833+$posArray[0], 96+$posArray[1], 0xAC170E, 25)
-;~ 			If Not @error Then
-;~ 				$doorFound = True
-;~ 				MouseClick("", $bCoord[0]+4, $bCoord[1]+1, 1, 0)
-;~ 			Else
-;~ 				ConsoleWrite("T2: Lost")
-;~ 				$doorFound = False
-;~ 			EndIf
-;~ 		EndIf
-;~ 	WEnd
-;~ 	ConsoleWrite(@CRLF)
+			Local $bCoord = PixelSearch(790+$posArray[0], 70+$posArray[1], 835+$posArray[0], 100+$posArray[1], 0xC41713, 25)
+			If Not @error Then
+				$doorFound = True
+				MouseClick("", $bCoord[0]+4, $bCoord[1]+1, 1, 0)
+			Else
+				$doorFound = False
+			EndIf
+		EndIf
+	WEnd
+	ConsoleWrite(@CRLF)
 
-;~ 	;walks to grand exchange
-;~ 	Sleep(10000)
-;~ 	betterMouseClick(800, 58)
-;~ 	Sleep(12000)
-;~ 	betterMouseClick(787, 77)
-;~ 	Sleep(8000)
-;~ 	betterMouseClick(782, 98)
-;~ 	Sleep(7500)
-;~ 	betterMouseClick(835, 45)
-;~ 	Sleep(9000)
-;~ 	betterMouseClick(844, 51)
-;~ 	Sleep(10000)
+	;walks to grand exchange
+	Sleep(10000)
+	betterMouseClick(800, 58)
+	Sleep(12000)
+	betterMouseClick(787, 77)
+	Sleep(8000)
+	betterMouseClick(782, 98)
+	Sleep(7500)
+	betterMouseClick(835, 45)
+	Sleep(9000)
+	betterMouseClick(844, 51-3)
+	Sleep(13000)
 
 	;opens bank
 	betterMouseMove(484, 224)
@@ -218,25 +236,21 @@ Func walkToGrandExchange()
 		betterMouseClick(248, 278) ;click coins
 		Sleep(1000)
 		$withdrawnItems[0] = 1
-		ConsoleWrite("clicked coins")
 	EndIf
 	If betterPixelSearch(297, 270, 297, 270, 0xACA09F, 2) Then
 		betterMouseClick(296, 272) ;click cowhide
 		Sleep(1000)
 		$withdrawnItems[1] = 1
-		ConsoleWrite("clicked cow")
 	EndIf
 	If betterPixelSearch(344, 273, 344, 273, 0x2A2414, 2) Then
 		betterMouseClick(341, 274) ;click hard leather
 		Sleep(1000)
 		$withdrawnItems[2] = 1
-		ConsoleWrite("clicked leather")
 	EndIf
 	If betterPixelSearch(389, 273, 389, 273, 0x3D3905, 2) Then
 		betterMouseClick(390, 272) ;click leather
 		Sleep(1000)
 		$withdrawnItems[3] = 1
-		ConsoleWrite("clicked soft leather")
 	EndIf
 
 	ConsoleWrite(@CRLF)
@@ -255,9 +269,9 @@ Func walkToGrandExchange()
 	Sleep(2000)
 
 	Local $startSlot = 1
-	Local $startSlots[4][2] = [[769,258],[769,258],[809,256],[852,258]]
+	Local $startSlots[4][2] = [[769,258],[769,258],[809,256],[852,258]] ;coords of slots in inventory
+
 	;sell items
-	betterMouseClick(272, 324)
 	Sleep(1000)
 	If ($withdrawnItems[0] = 1) Then ;see if we are holding coins already
 		$startSlot = 2 - 1 ;-1 for array
@@ -269,13 +283,58 @@ Func walkToGrandExchange()
 	Local $currentSlot = $startSlot
 	For $x in $withdrawnItems
 		$totalSlots += $withdrawnItems[$x]
-		ConsoleWrite(", " & $x)
 	Next
 
-	ConsoleWrite(@CRLF)
-	ConsoleWrite("totalSlots: " & $totalSlots & ", startSlot: " & $startSlot & ", currentSlot: " & $currentSlot)
+	;sell hard leather
+	If ($withdrawnItems[2] = 1) Then ;if withdrew some leather from bank sell it
+		betterMouseClick(767, 259) ;leather
+		Sleep(1000)
+		betterMouseClick(448, 383) ;decrease 5%
+		Sleep(500)
+		betterMouseClick(448, 383) ;decrease 5%
+		Sleep(1000)
+		betterMouseClick(420, 460) ;confirm
+		Sleep(3000)
+		betterMouseClick(613, 245) ;click collect
+	EndIf
+
+	;sell leather
+	If ($withdrawnItems[3] = 1) Then ;if withdrew some leather from bank sell it
+		betterMouseClick(767, 259) ;leather
+		Sleep(1000)
+		betterMouseClick(448, 383) ;decrease 5%
+		Sleep(500)
+		betterMouseClick(448, 383) ;decrease 5%
+		Sleep(1000)
+		betterMouseClick(420, 460) ;confirm
+		Sleep(3000)
+		betterMouseClick(613, 245) ;click collect
+	EndIf
+
 	;buy 2000 cowhide
-;~ 	Send("cowhide"
+	betterMouseClick(218, 327)
+	Sleep(2000)
+	Send("cowhide")
+	Sleep(2000)
+	betterMouseClick(103, 83) ;click searched cowhides
+	Sleep(2000)
+	betterMouseClick(347, 384) ;add 1k
+	Sleep(1000)
+	betterMouseClick(347, 384)
+	Sleep(1000)
+	betterMouseClick(601, 383) ;increase 5%
+	Sleep(1000)
+	betterMouseClick(601, 383)
+	Sleep(1000)
+	betterMouseClick(421, 452) ;confirm
+	Sleep(3000)
+	betterMouseClick(603, 244) ;collect
+	Sleep(2000)
+	betterMouseClick(103, 83) ;close ge
+	Sleep(1000)
+
+	;open bank and get runes to go to lumbridge
+	withdrawLumbridgeRunes()
 EndFunc
 
 Func depositLeather()
@@ -292,6 +351,19 @@ Func withdrawVarrockRunes()
 	MouseClick("", 437+$posArray[0], 271+$posArray[1], 1, 0) ;withdraw law
 	Sleep(1500)
 	MouseClick("", 482+$posArray[0], 272+$posArray[1], 1, 0) ;withdraw fire
+	Sleep(1500)
+EndFunc
+
+Func withdrawLumbridgeRunes()
+	betterMouseClick(391, 492) ;quantity 1
+	Sleep(1500)
+	betterMouseClick(437, 271) ;law runes
+	Sleep(1500)
+	betterMouseClick(529, 273) ;earth runes
+	Sleep(1500)
+	betterMouseClick(440, 492) ;quantity 10
+	Sleep(1500)
+	betterMouseClick(247, 273) ;coins
 	Sleep(1500)
 EndFunc
 
