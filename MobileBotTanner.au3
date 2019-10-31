@@ -13,7 +13,7 @@ Global $gotLost = 0
 #EndRegion
 
 WinActivate("Streaming game from BlueStacks")
-teleportToLumbridge()
+runBot()
 
 ;stops script when hotkey is pressed
 Func stopBot()
@@ -169,6 +169,10 @@ Func teleportToVarrock()
 
 	Sleep(5000)
 	walkToGrandExchange()
+EndFunc
+
+Func walkToAlkarid()
+
 EndFunc
 
 Func walkToGrandExchange()
