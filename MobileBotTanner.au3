@@ -3,7 +3,6 @@ HotKeySet("{F4}", stopBot)
 HotKeySet("{F3}", startBot)
 
 ;window size set to 974, 532
-;zoom level 802, 299
 
 #Region ### GLOBAL VARIABLES
 Global $posArray = WinGetPos("Streaming game from BlueStacks")
@@ -32,7 +31,6 @@ Func startBot()
 EndFunc
 
 Func betterMouseClick($x, $y)
-	$posArray = WinGetPos("Streaming game from BlueStacks")
 	MouseClick("", $x + $posArray[0], $y + $posArray[1], 1, 0)
 EndFunc
 
@@ -68,30 +66,30 @@ Func runBot()
 		Sleep(1000)
 	WEnd
 
-	betterMouseClick(768, 51)
+	MouseClick("", 768+$posArray[0], 51+$posArray[1], 1, 0)
 	Sleep(500)
 
 	;position camera up
-	betterMouseMove(474, 209)
+	MouseMove(474+$posArray[0], 209+$posArray[1], 0)
 	MouseDown("")
-	betterMouseMoveSpeed(474, 409, 10)
+	MouseMove(474+$posArray[0], 409+$posArray[1])
 	MouseUp("")
 
 	;disable run
 	Local $color = PixelGetColor(768+$posArray[0], 162+$posArray[1])
 	If ($color = 0xECDA67) Then
-		betterMouseClick(768, 162)
+		MouseClick("", 768+$posArray[0], 162+$posArray[1], 1, 0)
 		Sleep(1000)
 	EndIf
 
 	;open bank
-	betterMouseClick(451, 267)
+	MouseClick("", 451+$posArray[0], 267+$posArray[1], 1, 0)
 	Sleep(1000)
 	;despoit all
-	betterMouseClick(599, 481)
+	MouseClick("", 599+$posArray[0], 481+$posArray[1], 1, 0)
 	Sleep(1000)
 	;withdraw coins
-	betterMouseClick(253, 270)
+	MouseClick("", 253+$posArray[0], 270+$posArray[1], 1, 0)
 	Sleep(1000)
 
 	withdrawCowhides()
@@ -105,9 +103,9 @@ Func banking()
 	Else
 		PixelSearch(415+$posArray[0], 145+$posArray[1], 415+$posArray[0], 145+$posArray[1], 0x3833E2, 2)
 		If Not @error Then
-			betterMouseClick(372, 141)
+			MouseClick("", 372+$posArray[0], 141+$posArray[1], 1, 0)
 			Sleep(1000)
-			betterMouseClick(322, 77)
+			MouseClick("", 322+$posArray[0], 77+$posArray[1], 1, 0)
 			Sleep(1000)
 			depositLeather()
 		Else
@@ -124,18 +122,18 @@ Func checkIfOutOfCowhides()
 EndFunc
 
 Func teleportToLumbridge()
-	betterMouseClick(596, 488) ;deposit inventory
+	MouseClick("", 596+$posArray[0], 488+$posArray[1], 1, 0) ;deposit inventory
 	Sleep(1500)
 
 	withdrawLumbridgeRunes()
 
-	betterMouseClick(637, 200) ;close bank
+	MouseClick("", 637+$posArray[0], 200+$posArray[1], 1, 0) ;close bank
 	Sleep(3000)
 
 	;check if magic tab is open
 	PixelSearch(58+$posArray[0], 311+$posArray[1],58+$posArray[0], 311+$posArray[1], 0x71261D, 2)
 	If @error Then
-		betterMouseClick(58, 311)
+		MouseClick("", 58+$posArray[0], 311+$posArray[1], 1, 0)
 		Sleep(1000)
 	EndIf
 
@@ -145,25 +143,25 @@ Func teleportToLumbridge()
 EndFunc
 
 Func teleportToVarrock()
-	betterMouseClick(596, 488) ;deposit inventory
+	MouseClick("", 596+$posArray[0], 488+$posArray[1], 1, 0) ;deposit inventory
 	Sleep(1500)
 
 	withdrawVarrockRunes()
 
-	betterMouseClick(637, 200) ;close bank
+	MouseClick("", 637+$posArray[0], 200+$posArray[1], 1, 0) ;close bank
 	Sleep(3000)
 
 	;check if magic tab is open
 	PixelSearch(58+$posArray[0], 311+$posArray[1],58+$posArray[0], 311+$posArray[1], 0x71261D, 2)
 	If @error Then
-		betterMouseClick(58, 311)
+		MouseClick("", 58+$posArray[0], 311+$posArray[1], 1, 0)
 		Sleep(1000)
 	EndIf
 
 	;check if can cast varrock teleport
 	PixelSearch(134+$posArray[0], 297+$posArray[1], 134+$posArray[0], 297+$posArray[1], 0x7070E5, 5)
 	If Not @error Then
-		betterMouseClick(135, 290)
+		MouseClick("", 135+$posArray[0], 290+$posArray[1], 1, 0)
 	Else
 		ConsoleWrite("teleportToVarrock(): Tried teleporting to varrock and failed")
 		Exit
@@ -184,14 +182,14 @@ Func walkToGrandExchange()
 		Local $aCoord = PixelSearch(790+$posArray[0], 70+$posArray[1], 835+$posArray[0], 100+$posArray[1], 0xDC0E09, 10)
 		If Not @error Then
 			$doorFound = True
-			betterMouseClick($aCoord[0]+4, $aCoord[1]+1)
+			MouseClick("", $aCoord[0]+4, $aCoord[1]+1, 1, 0)
 		Else
 			$doorFound = False
 
 			Local $bCoord = PixelSearch(790+$posArray[0], 70+$posArray[1], 835+$posArray[0], 100+$posArray[1], 0xC41713, 25)
 			If Not @error Then
 				$doorFound = True
-				betterMouseClick($bCoord[0]+4, $bCoord[1]+1)
+				MouseClick("", $bCoord[0]+4, $bCoord[1]+1, 1, 0)
 			Else
 				$doorFound = False
 			EndIf
@@ -345,18 +343,18 @@ EndFunc
 
 Func depositLeather()
 	Sleep(3000)
-	betterMouseClick(769, 258)
+	MouseClick("", 769+$posArray[0], 258+$posArray[1], 1, 0)
 	Sleep(1000)
 	$amountTanned = $amountTanned + 27
 	withdrawCowhides()
 EndFunc
 
 Func withdrawVarrockRunes()
-	betterMouseClick(390, 493) ;select quantity 1
+	MouseClick("", 390+$posArray[0], 493+$posArray[1], 1, 0) ;select quantity 1
 	Sleep(1500)
-	betterMouseClick(437, 271) ;withdraw law
+	MouseClick("", 437+$posArray[0], 271+$posArray[1], 1, 0) ;withdraw law
 	Sleep(1500)
-	betterMouseClick(482, 272) ;withdraw fire
+	MouseClick("", 482+$posArray[0], 272+$posArray[1], 1, 0) ;withdraw fire
 	Sleep(1500)
 EndFunc
 
@@ -376,9 +374,9 @@ EndFunc
 Func withdrawCowhides()
 	;cowhides
 	checkIfOutOfCowhides()
-	betterMouseClick(299, 282)
+	MouseClick("", 299+$posArray[0], 282+$posArray[1], 1, 0)
 	Sleep(1000)
-	betterMouseClick(637, 197)
+	MouseClick("", 637+$posArray[0], 197+$posArray[1], 1, 0)
 	Sleep(1000)
 
 	walkToTanner()
@@ -386,9 +384,9 @@ EndFunc
 
 Func walkToTanner()
 	;walk from alkarid bank
-	betterMouseClick(865, 62)
+	MouseClick("", 865+$posArray[0], 62+$posArray[1], 1, 0)
 	Sleep(8600)
-	betterMouseClick(836+5, 53+2)
+	MouseClick("", 836+$posArray[0], 53+$posArray[1], 1, 0)
 	Sleep(13000)
 	tannerSearch()
 EndFunc
@@ -406,6 +404,7 @@ Func tannerSearch()
 			$tannerFound = False
 			ContinueLoop
 		EndIf
+
 		PixelSearch(420+$posArray[0], 74+$posArray[1], 420+$posArray[0], 74+$posArray[1], 0xCBBA95, 5)
 		If Not @error Then
 			$tannerFound = True
@@ -420,20 +419,20 @@ EndFunc
 Func tanLeather()
 	Switch $tanLeather
 		Case "soft"
-			BetterMouseClick(348, 142)
+			MouseClick("", 348+$posArray[0], 142+$posArray[1], 1, 0)
 			Sleep(1000)
-			BetterMouseClick(348, 142)
+			MouseClick("", 348+$posArray[0], 142+$posArray[1], 1, 0)
 			Sleep(1000)
-			BetterMouseClick(303, 92)
+			MouseClick("", 303+$posArray[0], 92+$posArray[1], 1, 0)
 			Sleep(1000)
-			BetterMouseClick(348, 142)
+			MouseClick("", 348+$posArray[0], 142+$posArray[1], 1, 0)
 			Sleep(1000)
 
 			;hold down mouse and drag to tan all0
-			betterMouseMove(254, 275)
+			MouseMove(254+$posArray[0], 275+$posArray[1],0)
 			MouseDown("")
 			Sleep(1000)
-			betterMouseMove(254, 275+106)
+			MouseMove(254+$posArray[0], 275+$posArray[1]+106)
 			MouseUp("")
 		Case "hard"
 			MouseClick("", 348+$posArray[0], 142+$posArray[1], 1, 0)
@@ -479,7 +478,7 @@ Func walkToBank()
 		Local $aCoord = PixelSearch(840+$posArray[0], 100+$posArray[1], 885+$posArray[0], 130+$posArray[1], 0xD34325, 10)
 		If Not @error Then
 			$doorFound = True
-			betterMouseClick($aCoord[0]+4, $aCoord[1]+1)
+			MouseClick("", $aCoord[0]+4, $aCoord[1]+1, 1, 0)
 		Else
 			ConsoleWrite("T1: Lost" & ", ")
 			$doorFound = False
@@ -487,7 +486,7 @@ Func walkToBank()
 			Local $bCoord = PixelSearch(840+$posArray[0], 100+$posArray[1], 885+$posArray[0], 130+$posArray[1], 0xCF4F2E, 25)
 			If Not @error Then
 				$doorFound = True
-				betterMouseClick($bCoord[0]+4, $bCoord[1]+1)
+				MouseClick("", $bCoord[0]+4, $bCoord[1]+1, 1, 0)
 			Else
 				ConsoleWrite("T2: Lost" & ", ")
 				$doorFound = False
@@ -495,7 +494,7 @@ Func walkToBank()
 				Local $cCoord = PixelSearch(840+$posArray[0], 100+$posArray[1], 885+$posArray[0], 130+$posArray[1], 0xD04B2D, 25)
 				If Not @error Then
 					$doorFound = True
-					betterMouseClick($cCoord[0]+4, $cCoord[1]+1)
+					MouseClick("", $cCoord[0]+4, $cCoord[1]+1, 1, 0)
 				Else
 					ConsoleWrite("T3: Lost" & @CRLF)
 					$doorFound = False
@@ -506,11 +505,11 @@ Func walkToBank()
 
 	;walk from tanner to bank
 	Sleep(4000)
-	betterMouseClick(832,182)
+	MouseClick("", 832+$posArray[0], 182+$posArray[1], 1, 0)
 	Sleep(10000)
-	betterMouseClick(808,151)
+	MouseClick("", 808+$posArray[0], 151+$posArray[1], 1 ,0)
 	Sleep(6500)
-	betterMouseClick(358+9, 273) ;opens bank
+	MouseClick("", 358+9+$posArray[0], 273+$posArray[1], 1, 0) ;opens bank
 
 	banking()
 EndFunc
