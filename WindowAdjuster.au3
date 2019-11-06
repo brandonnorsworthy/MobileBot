@@ -18,11 +18,21 @@ EndFunc
 Func runBot()
 	$posArray = WinGetPos($windowName)
 	ConsoleWrite("X " & $posArray[0] & " Y " & $posArray[1] & " X " & $posArray[2] & " Y " & $posArray[3])
+	;x
 	betterMouseMove($posArray[2] - 2, $posArray[3]/2 - 2)
 	MouseDown("")
 	Sleep(300)
 	betterMouseMoveSpeed(895 - 2, $posArray[3]/2 - 2, 10)
 	MouseUp("")
+
+	Global $posArray = WinGetPos($windowName)
+	;y
+	betterMouseMove($posArray[2]/2 - 2, $posArray[3] - 2)
+	MouseDown("")
+	Sleep(300)
+	betterMouseMoveSpeed($posArray[2]/2 - 2, 503, 10)
+	MouseUp("")
+
 	$posArray = WinGetPos($windowName)
 	ConsoleWrite(@CRLF & "X " & $posArray[0] & " Y " & $posArray[1] & " X " & $posArray[2] & " Y " & $posArray[3])
 EndFunc
